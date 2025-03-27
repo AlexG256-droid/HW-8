@@ -20,7 +20,7 @@ public class GameController {
     JsonNode roomsNode = rootNode.get("rooms");
 
     List<Room> roomList = parseRooms(roomsNode, gameData);
-    this.map = new Map(roomList);
+    this.map = new Map(roomList, gameData.getName(), gameData.getVersion());
   }
 
   private List<Room> parseRooms(JsonNode roomsNode, GameData gameData) {

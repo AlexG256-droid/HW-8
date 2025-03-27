@@ -112,15 +112,27 @@ public class Item {
   }
 
   public void setWhen_used(String when_used) {
-    this.when_used = when_used != null ? when_used : "";
+    if (when_used != null) {
+      this.when_used = when_used;
+    } else {
+      this.when_used = "";
+    }
   }
 
   public void setDescription(String description) {
-    this.description = description != null ? description : "";
+    if (description != null) {
+      this.description = description;
+    } else {
+      this.description = "";
+    }
   }
 
   public void setPicture(String picture) {
-    this.picture = picture != null ? picture : "";
+    if (picture != null) {
+      this.picture = picture;
+    } else {
+      this.picture = "";
+    }
   }
 
   /**

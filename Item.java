@@ -45,72 +45,112 @@ public class Item {
     this.picture = "";
   }
 
+
   public String getName() {
+
     return name;
   }
 
   public int getWeight() {
+
     return weight;
   }
 
   public int getMax_uses() {
+
     return max_uses;
   }
 
   public int getUses_remaining() {
+
     return uses_remaining;
   }
 
   public int getValue() {
+
     return value;
   }
 
   public String getWhen_used() {
+
     return when_used;
   }
 
   public String getDescription() {
+
     return description;
   }
 
   public String getPicture() {
+
     return picture;
   }
 
   // setter method
 
-
   public void setName(String name) {
-    this.name = name;
+    this.name = (name == null || name.trim().isEmpty())
+            ? "Unknown Item"
+            : name.trim();
   }
 
   public void setWeight(int weight) {
-    this.weight = weight;
+    this.weight = Math.max(weight, 0);
   }
 
   public void setMax_uses(int max_uses) {
-    this.max_uses = max_uses;
+    this.max_uses = Math.max(max_uses, 0);
+    this.uses_remaining = Math.min(this.uses_remaining, this.max_uses);
   }
 
   public void setUses_remaining(int uses_remaining) {
-    this.uses_remaining = uses_remaining;
+    this.uses_remaining = Math.min(Math.max(uses_remaining, 0), this.max_uses);
   }
 
   public void setValue(int value) {
-    this.value = value;
+    this.value = Math.max(value, 0);
   }
 
   public void setWhen_used(String when_used) {
-    this.when_used = when_used;
+    this.when_used = when_used != null ? when_used : "";
   }
 
   public void setDescription(String description) {
-    this.description = description;
+    this.description = description != null ? description : "";
   }
 
   public void setPicture(String picture) {
-    this.picture = picture;
+    this.picture = picture != null ? picture : "";
   }
+
+  /**
+   * Uses the item once if possible
+   * @return true if item was used successfully, false if no uses remaining
+   */
+  public boolean use() {
+    if (uses_remaining > 0) {
+      uses_remaining--;
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Repairs the item
+   */
+  public void repair() {
+    this.uses_remaining = this.max_uses;
+  }
+
+  /**
+   * Checks if no uses remaining
+   * @return true if no uses remain, false if usable
+   */
+  public boolean is_broken() {
+    return uses_remaining <= 0;
+  }
+
+
 
   /**
    * Returns a string representation of the Item.
@@ -129,4 +169,19 @@ public class Item {
             ", picture='" + picture + '\'' +
             '}';
   }
+
+  /**
+   * Compares items by name (case-insensitive)
+   * @param obj Object to compare with
+   * @return true if items have same name (case-insensitive)
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) return true;
+    if (obj == null || getClass() != obj.getClass()) return false;
+    Item item = (Item) obj;
+    return name.equalsIgnoreCase(item.name);
+  }
+
+
 }

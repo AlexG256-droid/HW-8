@@ -300,48 +300,47 @@ public class GameController {
     return "You don't have item '" + itemName + "' in your inventory.";
   }
 
-  // useItem and answerQuestion boolean methods to solve monster and puzzle -- David Liu.
+  // useItem and answerPuzzle methods to solve monster and puzzle -- David Liu.
 
-  public boolean useItem(String itemName) {
-    // Check for monster present in current room.
-    Monster monster = currentRoom.getMonster();
-    // If no monster, then return false (no monster to use item on).
+  public String useItem(String itemName) {
+    // Check for monster in room.
+    Monster monster = player.getCurrentRoom().getMonsters();
     if (monster == null) {
-      return false;
+      return;
     }
     // Check that the player has the item in their inventory.
     if (!player.hasItem(itemName)) {
-      return false;
+      return "The solution must be the required item.";
     }
-    // Solve the monster challenge using the item.
+    // Solve monster using the item.
     int result = monster.solve(itemName);
     if (result == Challenge.SOLVE_SUCCESS) {
       // If useItem was successful, the monster goes to sleep and is removed from the room.
       currentRoom.setMonster(null);
       // Remove the used item from inventory after use.
       player.removeItem(itemName);
-      return true;
+      return "Puzzle solved using the correct item!";
     }
-    // If the wrong item was used, the monster is alive.
-    return false;
+    // If the wrong item was used:
+    return "The item does not match the challenge's solution.";
   }
 
-  public boolean answerPuzzle(String answer) {
-    // Check for a puzzle in the current room.
-    Puzzle puzzle = currentRoom.getPuzzle();
+  public String answerPuzzle(String answer) {
+    // Check for puzzle.
+    Puzzle puzzle = player.getCurrentRoom().getPuzzles();
     // No puzzle in this room.
     if (puzzle == null) {
-      return false;
+      return;
     }
     // Solve the puzzle with the answer.
     int result = puzzle.solve(answer);
     if (result == Challenge.SOLVE_SUCCESS) {
       // If the answer is correct, clear the puzzle from the room.
       currentRoom.setPuzzle(null);
-      return true;
+      return "Puzzle solved using the correct magic word!";
     }
     // Otherwise, the puzzle remains unsolved.
-    return false;
+    return "The magic word does not match the puzzle's solution.";
   }
 
   // save and load game -- Chen

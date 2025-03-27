@@ -210,12 +210,21 @@ public class GameController {
     int playerHealth = player.getHealth();
 
     // display health message according to player's health
-    String healthMessage = (playerHealth > 0 && playerHealth <= 100) ? "You're still healthy and wide awake"
-            :"You're soundly asleep";
+    String healthMessage;
+    if (playerHealth > 0 && playerHealth <= 100) {
+      healthMessage = "You're still healthy and wide awake"
+    } else {
+      healthMessage = "You're soundly asleep";
+    }
 
     // display blocking message according to the next room
     Room nextRoom = getNextRoom(player.getCurrentRoom(),direction);
-    String blockMessage = (nextRoom != null) ? nextRoom.getDescription() : "You can't go that way.";
+    String blockMessage;
+    if (nextRoom != null) {
+      blockMessage = nextRoom.getDescription();
+    } else {
+      blockMessage = "You can't go that way.";
+    }
 
     // control the view display according to the result of the player move
     switch (moveResult) {
@@ -291,18 +300,18 @@ public class GameController {
     return "You don't have item '" + itemName + "' in your inventory.";
   }
 
-  // useItem and answerPuzzle boolean methods to solve monster and puzzle -- David Liu.
+  // useItem and answerQuestion boolean methods to solve monster and puzzle -- David Liu.
 
-  public String useItem(String itemName) {
+  public boolean useItem(String itemName) {
     // Check for monster present in current room.
     Monster monster = currentRoom.getMonster();
-    // If no monster, then return (no monster to use item on).
+    // If no monster, then return false (no monster to use item on).
     if (monster == null) {
-      return;
+      return false;
     }
-    // Check that the player has the required item in their inventory.
+    // Check that the player has the item in their inventory.
     if (!player.hasItem(itemName)) {
-      return "The solution must be the required item.";
+      return false;
     }
     // Solve the monster challenge using the item.
     int result = monster.solve(itemName);
@@ -311,28 +320,28 @@ public class GameController {
       currentRoom.setMonster(null);
       // Remove the used item from inventory after use.
       player.removeItem(itemName);
-      return "Puzzle solved using the correct item!";
+      return true;
     }
     // If the wrong item was used, the monster is alive.
-    return "The item does not match the challenge's solution.";
+    return false;
   }
 
-  public String answerPuzzle(String answer) {
+  public boolean answerPuzzle(String answer) {
     // Check for a puzzle in the current room.
     Puzzle puzzle = currentRoom.getPuzzle();
     // No puzzle in this room.
     if (puzzle == null) {
-      return;
+      return false;
     }
     // Solve the puzzle with the answer.
     int result = puzzle.solve(answer);
     if (result == Challenge.SOLVE_SUCCESS) {
       // If the answer is correct, clear the puzzle from the room.
       currentRoom.setPuzzle(null);
-      return "Puzzle solved using the correct magic word!";
+      return true;
     }
     // Otherwise, the puzzle remains unsolved.
-    return "The magic word does not match the puzzle's solution.";
+    return false;
   }
 
   // save and load game -- Chen

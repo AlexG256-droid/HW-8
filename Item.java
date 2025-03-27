@@ -88,10 +88,12 @@ public class Item {
 
   // setter method
 
-  public void setName(String name) {
-    this.name = (name == null || name.trim().isEmpty())
-            ? "Unknown Item"
-            : name.trim();
+ public void setName(String name) {
+    if (name == null || name.trim().isEmpty()) {
+        this.name = "Unknown Item";
+    } else {
+        this.name = name.trim();
+    }
   }
 
   public void setWeight(int weight) {

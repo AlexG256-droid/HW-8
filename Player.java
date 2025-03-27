@@ -11,22 +11,37 @@ public class Player {
   private Integer capacity;
   private Room currentRoom;
 
+  private final int MINIMUM = 0;
+  private final int ROOMNUMBERINVALID = 0;
+  private final int MAXIMUMREMAININGUSES = 1;
+  private final int MAXIMUMHEALTH = 100;
+  private final int MAXIMUMCAPACITY = 13;
+
+  /**
+   * Player constructor.
+   */
+  public Player(String name, List<Item> inventory, Room currentRoom) {
+    this.name = name;
+    this.score = MINIMUM;
+    this.health = MAXIMUMHEALTH;
+    this.inventory = inventory;
+    this.capacity = MINIMUM;
+    this.currentRoom = currentRoom;
+  }
+
   /**
    * Pick up the item.
    * @param pickedItem item
-   * @return return a int -1 means capacity exceed limit,0 succeed
+   * @return return int -1 means capacity exceed limit,0 succeed
    */
   public boolean pickUpItem(Item pickedItem) {
-    int sum = 0;
-
+    int sum = MINIMUM;
     // sum the weight of all items in the inventory
-    for (int i = 0; i < inventory.size(); i++) {
-      sum += inventory.get(i).getWeight();
+    for (Item item : inventory) {
+      sum += item.getWeight();
     }
-
     // add the weight of the picked item
     sum += pickedItem.getWeight();
-
     // check if adding the new item exceeds the capacity
     if (sum > capacity) {
       // exit the method if capacity is exceeded
@@ -40,17 +55,15 @@ public class Player {
   /**
    * Drop item to the room.
    * @param droppedItem drop item
-   *@return return true means success ,false othersie
+   *@return return true means success ,false otherwise
    */
   public boolean dropItem(Item droppedItem) {
     // Check if the inventory contains the dropped item
     if (inventory.contains(droppedItem)) {
-
       // add item to Room
       this.currentRoom.getItem().add(droppedItem);
       // Remove the item from the inventory
       inventory.remove(droppedItem);
-
       return true;
     } else {
       return false;
@@ -83,10 +96,14 @@ public class Player {
 
   /**
    * Setter function - set the score of the player
-   * @param score score of the player
+   * @param score of the player
    */
-  private void setScore(Integer score) {
-    this.score = score;
+  private boolean setScore(Integer score) {
+    if (score >= MINIMUM) {
+      this.score = score;
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -103,13 +120,22 @@ public class Player {
    * @return boolean - status of the setting
    */
   public boolean setHealth(Integer health) {
-    if (health >= 0 && health <= 100) {
+    if (health >= MINIMUM && health <= MAXIMUMHEALTH) {
       this.health = health;
       return true;
     } else {
       // If health of the player is out of range it's false
       return false;
     }
+  }
+
+  /**
+   * Checks if the player runs out of health.
+   * @param health Integer
+   * @return boolean depending on whether the player is asleep
+   */
+  public boolean isAsleep(Integer health) {
+    return health == MINIMUM;
   }
 
   /**
@@ -121,6 +147,18 @@ public class Player {
   }
 
   /**
+   * Getter function - get the capacity
+   * @return the items that the player can pick
+   */
+  public boolean setCapacity(Integer capacity) {
+    if (capacity >= MINIMUM && capacity <= MAXIMUMCAPACITY) {
+      this.capacity = capacity;
+      return true;
+    }
+    return false;
+  }
+
+  /**
    * Getter function - get the room player located
    * @return the room player currently at
    */
@@ -129,14 +167,36 @@ public class Player {
   }
 
   /**
+   * Getter function - get the room player located
+   * @return the room player currently at
+   */
+  public boolean setCurrentRoom(Room currentRoom) {
+    if (currentRoom != null) {
+      this.currentRoom = currentRoom;
+      return true;
+    }
+    return false;
+  }
+
+  /**
    * Getter function - get the inventory of the player.
    * @return the inventory of the player
    */
-  public List<Item> getInventory() { return inventory;}
+  public List<Item> getInventory() {
+    return inventory;
+  }
+
+  /**
+   * Setter function - set the inventory of the player.
+   * @param inventory of the player
+   */
+  public void setInventory(List<Item> inventory) {
+    this.inventory = inventory;
+  }
 
   /**
    * Solve the puzzle with item
-   * @param item item tha player uses
+   * @param item item the player uses
    * @param puzzle puzzle that player facing
    * @return common status code
    */
@@ -144,24 +204,18 @@ public class Player {
     if (puzzle == null || item == null) {
       return Challenge.SOLVE_ERROR;
     }
-
-    if (item.getUses_remaining() < 1) {
+    if (item.getUses_remaining() < MAXIMUMREMAININGUSES) {
       return Challenge.SOLVE_FAIL;
     }
-
     Integer result = puzzle.solve(item);
-
     if (result == Challenge.SOLVE_SUCCESS && !puzzle.isActive()) {
       this.score += puzzle.getValue();
-      item.setUses_remaining(item.getUses_remaining() - 1);
-
+      item.setUses_remaining(item.getUses_remaining() - MAXIMUMREMAININGUSES);
       this.currentRoom.setRoomToPassable();
-
-      if (item.getUses_remaining() < 1) {
+      if (item.getUses_remaining() < MAXIMUMREMAININGUSES) {
         currentRoom.getItem().remove(item);
       }
     }
-
     return result;
   }
 
@@ -172,20 +226,17 @@ public class Player {
    * @return common status code
    */
   public Integer solvePuzzle(String magicWords, Puzzle puzzle) {
-    if (puzzle == null || magicWords == null || magicWords.equals("")) {
-      // "not a vaild puzzle or magic words"
+    if (puzzle == null || magicWords == null || magicWords.isEmpty()) {
+      // "not a valid puzzle or magic words"
       return Challenge.SOLVE_ERROR;
     }
-
     Integer result = puzzle.solve(magicWords);
-
     if (result == Challenge.SOLVE_SUCCESS && !puzzle.isActive()) {
       this.score += puzzle.getValue();
       // set room to passable for all direction
       // once the puzzle or monster being solved
       this.currentRoom.setRoomToPassable();
     }
-
     return result;
   }
 
@@ -197,25 +248,21 @@ public class Player {
    */
   public Integer solveMonster(Item item, Monster monster) {
     if (monster == null || item == null) {
-      // return("not a vaild puzzle or item"
+      // return("not a valid puzzle or item")
       return Challenge.SOLVE_ERROR;
     }
-
     int result = monster.solve(item);
-
     if (result == Challenge.SOLVE_SUCCESS && !monster.isActive()) {
       this.score += monster.getValue();
-      item.setUses_remaining(item.getUses_remaining() - 1);
+      item.setUses_remaining(item.getUses_remaining() - MAXIMUMREMAININGUSES);
       // set room to passable for all direction
       // once the puzzle or monster being solved
       this.currentRoom.setRoomToPassable();
-
-      // if getUsesRemaining <1, remove item
-      if (item.getUses_remaining() < 1) {
+      // if getUsesRemaining < 1, remove item
+      if (item.getUses_remaining() < MAXIMUMREMAININGUSES) {
         currentRoom.getItem().remove(item);
       }
     }
-
     return result;
   }
 
@@ -226,20 +273,17 @@ public class Player {
    * @return integer code shows that whether it works for the monster
    */
   public Integer solveMonster(String magicWords, Monster monster) {
-    if (monster == null || magicWords == null || magicWords.equals("")) {
-      // "not a vaild puzzle or magic words"
+    if (monster == null || magicWords == null || magicWords.isEmpty()) {
+      // "not a valid puzzle or magic words"
       return Challenge.SOLVE_ERROR;
     }
-
     int result = monster.solve(magicWords);
-
     if (result == Challenge.SOLVE_SUCCESS && !monster.isActive()) {
       this.score += monster.getValue();
       // set room to passable for all direction
       // once the puzzle or monster being solved
       this.currentRoom.setRoomToPassable();
     }
-
     return result;
   }
 
@@ -254,53 +298,49 @@ public class Player {
    *        -2: invalid direction input
    */
   public Integer move(String Direction, Map map) {
-    if (!(Direction.equals("N") || Direction.equals("E") || Direction.equals("S") || Direction.equals("W"))) {
+    if (!(Direction.equals("N") || Direction.equals("E") || Direction.equals("S")
+            || Direction.equals("W"))) {
       // "Input must be N, E, S, or W";
       return -2;
     }
-
-    int nextRoomNumber = -1;
-
-    // using switch case to try to catach direction
-    switch (Direction) {
-      case "N":
-        nextRoomNumber = this.currentRoom.getN();
-        // blockedMessage = "North is being permantly blocked ";
-        break;
-      case "E":
-        nextRoomNumber = this.currentRoom.getE();
-        // blockedMessage = "East is being permantly blocked ";
-        break;
-      case "S":
-        nextRoomNumber = this.currentRoom.getS();
-        // blockedMessage = "South is being permantly blocked ";
-        break;
-      case "W":
-        nextRoomNumber = this.currentRoom.getW();
-        // blockedMessage = "West is being permantly blocked ";
-        break;
-    }
-
+    int nextRoomNumber = getNextRoomNumber(Direction);
     // check
-    if (nextRoomNumber > 0) {
-      // if nextRoom number is greater than >. it is a vaild way
+    if (nextRoomNumber > MINIMUM) {
+      // if nextRoom number is greater than >. it is a valid way
       for (int i = 0; i < map.getRooms().size(); i++) {
         Room room = map.getRooms().get(i);
         if (nextRoomNumber == room.getRoom_number()) {
           this.currentRoom = room;
           //"move successfully"
           return 1; 
-          // if map do have this room , then player move to this Room
+          // if map do have this room, then player move to this Room
         }
       }
       // Room number valid, but no room matched (unexpected error)
       return -1;
-    } else if (nextRoomNumber == 0) {
-      // if nextRoomNumber ==0, it is permantly blocked
+    } else if (nextRoomNumber == ROOMNUMBERINVALID) {
+      // if nextRoomNumber == 0, it is permanently blocked
       return 0;
     } else {
       // if it is negative, then there is puzzle or monster currently blocking the access
       return -1;
     }
+  }
+
+  public int getNextRoomNumber(String Direction) {
+    int nextRoomNumber = -1;
+    // using switch case to try to catch direction
+    // blockedMessage = "West is being permanently blocked";
+    nextRoomNumber = switch (Direction) {
+      case "N" -> this.currentRoom.getN();
+      // blockedMessage = "North is being permanently blocked";
+      case "E" -> this.currentRoom.getE();
+      // blockedMessage = "East is being permanently blocked";
+      case "S" -> this.currentRoom.getS();
+      // blockedMessage = "South is being permanently blocked";
+      case "W" -> this.currentRoom.getW();
+      default -> nextRoomNumber;
+    };
+    return nextRoomNumber;
   }
 }

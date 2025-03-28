@@ -108,7 +108,7 @@ public class GameController {
     if (map.getRooms() == null || map.getRooms().isEmpty()) {
       throw new IllegalStateException("empty map, can't create player");
     }
-    Room startingRoom = map.getRooms().get(9);
+    Room startingRoom = map.getRooms().get(0);
     this.player = new Player(playerName, new ArrayList<>(), startingRoom);
     this.player.setCapacity(13);
   }
@@ -183,46 +183,77 @@ public class GameController {
     return null;
   }
 
-  // look method and examine --Alexender
-  public void examineItem() {
-    return;
-  }
 
-  //public void lookAround() {
-    //view.displayMessage(this.player.getCurrentRoom().getDescription());
-    //view.displayMessage("Items" + this.player.getCurrentRoom().getItem());
-  //}
 
-  // revise it latter.!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
   private void lookAround() {
     Room currentRoom = player.getCurrentRoom();
-    view.displayMessage("\nYou are currently in the " + currentRoom.getDescription() + "\n");
+    view.displayMessage("\n===== You are currently in: " + currentRoom.getDescription() + " =====\n");
 
     // get items from rooms
-    view.displayMessage("\nItems: ");
-    for(int i =0;i<currentRoom.getItem().size();i++){
-      view.displayMessage(currentRoom.getItem().get(i).getName());
+    view.displayMessage("Items available in this room:");
+    for (int i = 0; i < currentRoom.getItem().size(); i++) {
+      view.displayMessage("  • " + currentRoom.getItem().get(i).getName());
     }
 
     // get fixures from rooms
-    for(int i =0;i<currentRoom.getFixures().size();i++){
-      view.displayMessage(currentRoom.getFixures().get(i).getName());
+    view.displayMessage("\nFixtures present in the room:");
+    for (int i = 0; i < currentRoom.getFixures().size(); i++) {
+      view.displayMessage("  • " + currentRoom.getFixures().get(i).getName());
     }
 
     // get ACTIVE!!!!! puzzle from rooms
-    view.displayMessage("\nPuzzles: ");
-    if(currentRoom.getPuzzles() != null){
-      if(currentRoom.getPuzzles().isActive()){
-        view.displayMessage(currentRoom.getPuzzles().getDescription());
+    view.displayMessage("\nPuzzles:");
+    if (currentRoom.getPuzzles() != null) {
+      if (currentRoom.getPuzzles().isActive()) {
+        view.displayMessage("  → " + currentRoom.getPuzzles().getDescription());
       }
     }
 
     // get ACTIVE!!! MONSTER from rooms
-    view.displayMessage("\nMonsters: ");
-    if(currentRoom.getMonsters() != null){
-      if(currentRoom.getMonsters().isActive()){
-        view.displayMessage(currentRoom.getMonsters().getDescription());
+    view.displayMessage("\nMonsters:");
+    if (currentRoom.getMonsters() != null) {
+      if (currentRoom.getMonsters().isActive()) {
+        view.displayMessage("  → " + currentRoom.getMonsters().getDescription());
       }
+    }
+  }
+
+  public void examine(String stuff) {
+    Room currentRoom = player.getCurrentRoom();
+
+    // check room have this stuff item
+    for (int i = 0; i < currentRoom.getItem().size(); i++) {
+      if (currentRoom.getItem().get(i).getName().equalsIgnoreCase(stuff)) {
+        view.displayMessage("\nItem: " + currentRoom.getItem().get(i).getDescription());
+        view.displayMessage("Uses remaining: " + currentRoom.getItem().get(i).getUses_remaining());
+      }
+    }
+
+    // check did player has this item
+    for (int i = 0; i < player.getInventory().size(); i++) {
+      if (player.getInventory().get(i).getName().equalsIgnoreCase(stuff)) {
+        view.displayMessage("\nItem: " + player.getInventory().get(i).getDescription());
+        view.displayMessage("Uses remaining: " + player.getInventory().get(i).getUses_remaining());
+      }
+    }
+
+    // check current room has this fixure
+    for (int i = 0; i < currentRoom.getFixures().size(); i++) {
+      if (currentRoom.getFixures().get(i).getName().equalsIgnoreCase(stuff)) {
+        view.displayMessage("\nFixture: " + currentRoom.getFixures().get(i).getDescription());
+      }
+    }
+
+    // check room has this puzzle
+    if (currentRoom.getPuzzles() != null && currentRoom.getPuzzles().getName().equalsIgnoreCase(stuff)) {
+      view.displayMessage("\nPuzzle: " + currentRoom.getPuzzles().getDescription());
+    }
+
+    // check room has this monster
+    if (currentRoom.getMonsters() != null && currentRoom.getMonsters().getName().equalsIgnoreCase(stuff)) {
+      view.displayMessage("\nMonster: " + currentRoom.getMonsters().getDescription());
     }
   }
 
@@ -473,7 +504,7 @@ public class GameController {
         dropItem(stuff);
         break;
       case "x", "examine":
-        examineItem();
+        examine(stuff);
         break;
       case "l","look":
         lookAround();

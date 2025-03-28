@@ -12,9 +12,10 @@ public class View {
   /**
    * get the player name.
    */
-  public void getPlayerName() {
+  public String getPlayerName() {
     System.out.println("Enter your name: ");
     playerName = scanner.nextLine().trim();
+    return playerName;
   }
 
   /**
@@ -74,4 +75,3 @@ public class View {
   }
 
 }
-

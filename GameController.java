@@ -24,6 +24,10 @@ public class GameController {
     List<Room> roomList = parseRooms(roomsNode, gameData);
     this.map = new Map(roomList, gameData.getName(), gameData.getVersion());
     this.view = new View();
+    String playername = view.getPlayerName();
+    createPlayer(playername);
+    // create player by default here
+
   }
 
   private List<Room> parseRooms(JsonNode roomsNode, GameData gameData) {
@@ -94,6 +98,21 @@ public class GameController {
     }
     return roomFixtures;
   }
+
+
+  /**
+   * Constructor helper method, create a player for base setting
+   * @return Void
+   */
+  public void createPlayer(String playerName) {
+    if (map.getRooms() == null || map.getRooms().isEmpty()) {
+      throw new IllegalStateException("empty map, can't create player");
+    }
+    Room startingRoom = map.getRooms().get(0);
+    this.player = new Player(playerName, new ArrayList<>(), startingRoom);
+    this.player.setCapacity(13);
+  }
+
 
   /**
    public GameController(String pathname) throws IOException {
@@ -306,7 +325,7 @@ public class GameController {
     }
     view.displayMessage("You don't have an item named '" + itemName + "' in your inventory.");
   }
-  
+
 
   public void solveMonster(Item item, Monster monster) {
     int result = player.solveMonster(item, monster);

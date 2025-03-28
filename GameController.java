@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
 
+import javax.print.DocFlavor;
+
 public class GameController {
   private Map map;
   private Player player;
@@ -21,6 +23,7 @@ public class GameController {
 
     List<Room> roomList = parseRooms(roomsNode, gameData);
     this.map = new Map(roomList, gameData.getName(), gameData.getVersion());
+    this.view = new View();
   }
 
   private List<Room> parseRooms(JsonNode roomsNode, GameData gameData) {
@@ -207,29 +210,30 @@ public class GameController {
    */
   public void movePlayer(String direction) {
     int moveResult = player.move(direction, map);
-    int playerHealth = player.getHealth();
-
-    // display health message according to player's health
-    String healthMessage = (playerHealth > 0 && playerHealth <= 100) ? "You're still healthy and wide awake"
-            :"You're soundly asleep";
+    HealthStatus healthStatus = player.getHealthStatus();
 
     // display blocking message according to the next room
     Room nextRoom = getNextRoom(player.getCurrentRoom(),direction);
-    String blockMessage = (nextRoom != null) ? nextRoom.getDescription() : "You can't go that way.";
+    String blockMessage;
+    if (nextRoom != null) {
+      blockMessage = nextRoom.getDescription();
+    } else {
+      blockMessage = "You can't go that way.";
+    }
 
     // control the view display according to the result of the player move
     switch (moveResult) {
       case 1:
-        view.displayMoveMessage("You enter the  " + player.getCurrentRoom().getRoom_name());
+        view.displayMessage("You enter the  " + player.getCurrentRoom().getRoom_name());
         break;
       case 0:
-        view.displayMoveMessage(" >> You cannot go into that direction! \n" + healthMessage);
+        view.displayMessage(" >> You cannot go into that direction! \n" + healthStatus.getHealthMessage());
         break;
       case -1:
-        view.displayMoveMessage("The path is blocked "+ blockMessage);
+        view.displayMessage("The path is blocked "+ blockMessage);
         break;
       case -2:
-        view.displayMoveMessage("Invalid direction! \n Can only use N, W, S, E");
+        view.displayMessage("Invalid direction! \n Can only use N, W, S, E");
         break;
     }
 
@@ -254,6 +258,14 @@ public class GameController {
   }
 
   // look method and examine --Alexender
+  public void examineItem() {
+    return;
+  }
+
+  public void lookItem() {
+    return;
+  }
+
 
   //take and drop item --Amy
   public void takeItem(String itemName) {
@@ -324,7 +336,7 @@ public class GameController {
     }
   }
 
-  public void solvePuzzle(Item item, Puzzle puzzle) {
+  private void solvePuzzle(Item item, Puzzle puzzle) {
     int result = player.solvePuzzle(item, puzzle);
     if (result == -2) {
       view.displayMessage("Not a valid puzzle or item.");
@@ -352,8 +364,108 @@ public class GameController {
     }
   }
 
+  /**
+   * display the inventory to the user.
+   */
+  public void showInventory() {
+    List<Item> inventory = player.getInventory();
+
+    String inventoryMessage;
+    if (inventory.isEmpty()) {
+      inventoryMessage = "There's nothing in your inventory yet.";
+    } else {
+      StringBuilder sb = new StringBuilder();
+      for (Iterator<Item> it = inventory.iterator(); it.hasNext();) {
+        Item item = it.next();
+        sb.append(item.getName());
+        if (it.hasNext()) {
+          sb.append(", ");
+        }
+      }
+      inventoryMessage = "Items in your inventory: " + sb.toString();
+    }
+
+    view.displayMessage(inventoryMessage + "\n" + player.getHealthStatus().getHealthMessage());
+  }
+
+  /**
+   * answer the puzzle.
+   *
+   * @param answer string answer of user input
+   */
+  public void answerPuzzle(String answer) {
+    if (answer == null) {
+      view.displayMessage("So what's your answer?: ");
+    }
+    Puzzle puzzle = player.getCurrentRoom().getPuzzles();
+    if(puzzle == null) {
+      view.displayMessage("There's no puzzle to be solve.");
+      return;
+    }
+    solvePuzzle(answer, puzzle);
+  }
+
+  /**
+   * quit method.
+   */
+  public void quit() {
+    view.displayMessage("Thanks for playing!\nYour score is " + player.getScore());
+    System.exit(0);
+  }
 
 
+  /**
+   * process the command.
+   *
+   * @param command a string list of command
+   */
+  public void getCommand(String[] command) {
+    String action = command[0];
+    String item = command[1];
+
+    switch (action) {
+      case "n", "north", "s", "south", "e", "east", "w", "west":
+        movePlayer(action);
+        break;
+      case "i","inventory":
+        showInventory();
+        break;
+      case "t","take":
+        takeItem(item);
+        break;
+      case "d","drop":
+        dropItem(item);
+        break;
+      case "x", "examine":
+        examineItem();
+        break;
+      case "l","look":
+        lookItem();
+        break;
+      case "u","use":
+        break;
+      case "a","answer":
+        answerPuzzle(item);
+        break;
+      case "q","quit":
+        quit();
+        break;
+      default:
+        view.displayMessage("Invalid command: " + action);
+        break;
+    }
+  }
+
+  /**
+   * while the game is not over, continue to fetch command from user input.
+   */
+  public void gameLoop() {
+    boolean gameOver = false;
+    while (!gameOver) {
+      String[] command = view.getInput();
+      getCommand(command);
+    }
+  }
 
 
   // save and load game -- Chen

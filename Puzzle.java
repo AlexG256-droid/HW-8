@@ -1,14 +1,19 @@
 
 /**
- * The Puzzle class extends Challenge, whereby all common attributes
- * and methods are inherited. It represents the game's puzzle logic.
+ * Representation of Puzzle class that extends the Challenge class.
+ * It represents the game's puzzle logic. 
+ * Puzzles can be solved by using items or text-based magic word.
  */
 public class Puzzle extends Challenge {
 
 
   /**
-   * If the puzzle is solved using an item instead of a text
-   * input:
+   * Attempts to solve the puzzle using an item. 
+   * 
+   * @param item the item to solve the puzzle
+   * @return  SOLVE_WRONG_TYPE if the solution is a text and not an item. 
+   *          SOLVE_SUCCESS if the correct item is used.  
+   *          SOLVE_FAIL if the item doesn't match the puzzle's solution.
    */
   @Override
   public Integer solve(Item item) {
@@ -29,9 +34,13 @@ public class Puzzle extends Challenge {
   }
 
   /**
-   * If the puzzle is solved using a single magic word (text input)
-   * instead of an item s:
-   */
+     * Attempts to solve the puzzle using a magic word. 
+     * 
+     * @param magicWord the text input used to solve the puzzle. 
+     * @return SOLVE_WRONG_TYPE if the solution is a item not a text. 
+     *         SOLVE_SUCCESS if the correct magic word is used. 
+     *         SOLVE_FAIL if the magic word doesn't match the puzzle's solution.
+     */
   @Override
   public Integer solve(String magicWord) {
     if (!(solution.startsWith("'") || solution.endsWith("'"))) {

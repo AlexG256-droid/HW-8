@@ -11,4 +11,13 @@ public class View {
     System.out.println(message);
   }
 
+  /**
+   * print out the message of the result of player action
+   *
+   * @param message message of player action
+   */
+  public void displayMessage(String message) {
+    System.out.println(message);
+  }
+
 }

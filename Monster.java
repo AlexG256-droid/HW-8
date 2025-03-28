@@ -1,64 +1,83 @@
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+/**
+ * Represents a monster, which extends the Challenge class.
+ * Monsters can attack players causing damage and can be defeated. 
+ * Monsters can be defeated using either specific items or magic words.
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Monster extends Challenge {
-  // Additional attributes unique to Monster
+  
   private int damage;
   private boolean can_attack;
   private String attack;
 
-  // Getter and setter for damage
+  /** 
+  * Damagae dealt by the monster. 
+  * @return amount of damage as an integer. 
+  */ 
   public int getDamage() {
     return damage;
   }
 
+  /**
+   * Sets the damage value of the monster.
+   * @param damage the damage value to set. 
+   */
   public void setDamage(int damage) {
     this.damage = damage;
   }
 
-  // Getter and setter for can_attack
+  /**
+   * Checks if the monster can attack.
+   * @return true if the monster can attack, otherwise return false. 
+   */
   public boolean isCan_attack() {
     return can_attack;
   }
 
+   /**
+   * Sets whether the monster can attack.
+   * @param can_attack true if the Monster can attack, false to disable. 
+   */
   public void setCan_attack(boolean can_attack) {
     this.can_attack = can_attack;
   }
 
-  // Getter and setter for attack
+  /**
+   * Gets description of the attack the monster can perform.
+   * @return the attack description as a String. 
+   */
   public String getAttack() {
     return attack;
   }
 
+   /**
+   * Sets the attack type the Monster can perform.
+   * @param attack The attack description to set. 
+   */
   public void setAttack(String attack) {
     this.attack = attack;
   }
 
   /**
-   * Attack the player damaging the health of the player
-   * @param player current player
-   * @return boolean - whether attack successfully
+   * Attacks a player, damaging their health by the monsters damage value. 
+   * @param player current player. 
+   * @return true if attack was successful, otherwise false if attack failed. 
    */
   public boolean attackPlayer(Player player) {
     int playerHealth = player.getHealth();
-    // Attack the player and affects the health of the player
-    // whether the player's health is out of range < 0
     return player.setHealth(playerHealth - this.damage);
   }
 
   @Override
   public Integer solve(Item item) {
     if (solution.startsWith("'") && solution.endsWith("'")) {
-      // solution is a text, not an item"
       return SOLVE_WRONG_TYPE;
-      // if solution is a text instead of a item ,then return
     } else if (solution.equalsIgnoreCase(item.getName())) {
-      //check if solution equal to item name,if solution is a item
       this.active = false;
-      // "Monster solved using the correct item!";
       return SOLVE_SUCCESS;
     } else {
-      // "The item does not match the Monster's solution.";
       return SOLVE_FAIL;
     }
   }
@@ -67,17 +86,11 @@ public class Monster extends Challenge {
   @Override
   public Integer solve(String magicWord) {
     if (!(solution.startsWith("'") || solution.endsWith("'"))) {
-      // return ("solution is a item not a text");
       return SOLVE_WRONG_TYPE;
-
-      // if solution is a item instead of a string
     } else if (solution.equalsIgnoreCase(magicWord)) {
-      //check if solution equal to magic word
       this.active = false;
-      // "Monster solved using the correct magic word!"
       return SOLVE_SUCCESS;
     } else {
-      // "The magicword does not match the Monster's solution."
       return SOLVE_FAIL;
     }
   }

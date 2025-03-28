@@ -290,8 +290,66 @@ public class GameController {
     }
     return "You don't have item '" + itemName + "' in your inventory.";
   }
+  
 
-  // useItem and answerPuzzle boolean methods to solve monster and puzzle -- David Liu.
+  public void solveMonster(Item item, Monster monster) {
+    int result = player.solveMonster(item, monster);
+    if (result == -2) {
+      view.displayMessage("Not a valid monster or item.");
+    }
+    else if (result == 0) {
+      view.displayMessage("The solution is text, not an item.");
+    } else if (result == -1) {
+      view.displayMessage("The item does not match the Monster's solution.");
+    } else if (result == 1) {
+      view.displayMessage("Monster solved using the correct item! (Item usage decreased by 1)");
+    }
+  }
+
+  public void solveMonster(String magicWords, Monster monster) {
+    int result = player.solveMonster(magicWords, monster);
+    if (result == -2) {
+      view.displayMessage("Not a valid monster or magic word.");
+    }
+    else if (result == 0) {
+      view.displayMessage("The solution is an item, not text.");
+    } else if (result == -1) {
+      view.displayMessage("The magic word does not match the Monster's solution.");
+    } else if (result == 1) {
+      view.displayMessage("Monster solved using the correct magic word!");
+    }
+  }
+
+  public void solvePuzzle(Item item, Puzzle puzzle) {
+    int result = player.solvePuzzle(item, puzzle);
+    if (result == -2) {
+      view.displayMessage("Not a valid puzzle or item.");
+    }
+    else if (result == 0) {
+      view.displayMessage("The solution is text, not an item.");
+    } else if (result == -1) {
+      view.displayMessage("The item does not match the Puzzle's solution.");
+    } else if (result == 1) {
+      view.displayMessage("Puzzle solved using the correct item! (Item usage decreased by 1)");
+    }
+  }
+
+  public void solvePuzzle(String magicWords, Puzzle puzzle) {
+    int result = player.solvePuzzle(magicWords, puzzle);
+    if (result == -2) {
+      view.displayMessage("Not a valid puzzle or magic word.");
+    }
+    else if (result == 0) {
+      view.displayMessage("The solution is an item, not a magic word.");
+    } else if (result == -1) {
+      view.displayMessage("The magic word does not match the Puzzle's solution.");
+    } else if (result == 1) {
+      view.displayMessage("Puzzle solved using the correct magic word!");
+    }
+  }
+
+
+
 
 
   // save and load game -- Chen
@@ -304,4 +362,3 @@ public class GameController {
   // print everything inside view Class
 
 }
-

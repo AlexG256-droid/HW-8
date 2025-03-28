@@ -311,9 +311,9 @@ public class Player {
    *        -2: invalid direction input
    */
   public Integer move(String Direction, Map map) {
-    if (!(Direction.equals("N") || Direction.equals("E") || Direction.equals("S")
-            || Direction.equals("W"))) {
-      // "Input must be N, E, S, or W";
+    if (!(Direction.equalsIgnoreCase("N") || Direction.equalsIgnoreCase("E") ||
+            Direction.equalsIgnoreCase("S") || Direction.equalsIgnoreCase("W"))) {
+      // anwser must be NSEW,ignore case
       return -2;
     }
     int nextRoomNumber = getNextRoomNumber(Direction);
@@ -325,7 +325,7 @@ public class Player {
         if (nextRoomNumber == room.getRoom_number()) {
           this.currentRoom = room;
           //"move successfully"
-          return 1; 
+          return 1;
           // if map do have this room, then player move to this Room
         }
       }

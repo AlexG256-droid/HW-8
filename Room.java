@@ -69,7 +69,7 @@ public class Room {
     public int getRoom_number() {
         return room_number;
     }
-
+    
 
     /**
      * Returns the description of the room.
@@ -135,6 +135,13 @@ public class Room {
     }
 
     // Getters for room properties 
+    /**
+     * Helper function that return the original descritption
+     *@return original description
+     */
+    public String getOriginalDescription() {
+        return description;
+    }
 
     public int getN() {
         return N;

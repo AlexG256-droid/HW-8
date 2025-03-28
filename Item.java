@@ -72,6 +72,10 @@ public class Item {
 
   // Setter Methods 
 
+/**
+ * Set name.  
+ * @param name If null/empty, defaults to "Unknown Item"
+ */
  public void setName(String name) {
     if (name == null || name.trim().isEmpty()) {
         this.name = "Unknown Item";
@@ -80,23 +84,39 @@ public class Item {
     }
   }
 
+/**
+ * Set weight.  
+ * @param weight min value is 0. 
+ */
   public void setWeight(int weight) {
     this.weight = Math.max(weight, 0);
   }
 
+/** 
+ * @param max_uses minimum value is 0. 
+ */
   public void setMax_uses(int max_uses) {
     this.max_uses = Math.max(max_uses, 0);
     this.uses_remaining = Math.min(this.uses_remaining, this.max_uses);
   }
 
+  /** 
+  * @param uses_remaining clamped to 0 max_uses range. 
+  */
   public void setUses_remaining(int uses_remaining) {
     this.uses_remaining = Math.min(Math.max(uses_remaining, 0), this.max_uses);
   }
 
+  /** 
+  * @param value Minimum value is 0 
+  */
   public void setValue(int value) {
     this.value = Math.max(value, 0);
   }
 
+  /** 
+  * @param when_used Null becomes empty string. 
+  */
   public void setWhen_used(String when_used) {
     if (when_used != null) {
       this.when_used = when_used;
@@ -105,6 +125,9 @@ public class Item {
     }
   }
 
+  /** 
+  * @param description Null becomes empty string. 
+  */
   public void setDescription(String description) {
     if (description != null) {
       this.description = description;
@@ -113,6 +136,9 @@ public class Item {
     }
   }
 
+  /** 
+  * @param picture Null becomes empty string. 
+  */
   public void setPicture(String picture) {
     if (picture != null) {
       this.picture = picture;

@@ -1,5 +1,15 @@
 /**
- * Represents an item class in the game with various attributes. 
+ * Represents an item in the game.
+ *
+ * Attributes:
+ * name: name of the item.
+ * weight: How much the item weighs. A player's avatar can carry a MAXIMUM of 13 weight unit* worth of items
+ * max_uses: how many times the item can be used, if it was "full".
+ * uses_remaining: how many uses are currently left for the item.
+ * value: how much the item is worth
+ * when_used: the text presented to the player when they successfully use the item in context.
+ * description: A brief description of the item.
+ * picture:  a picture representing the item (not relevant for HW8; might be used for the graphical version in HW9)
  */
 public class Item {
   private String name;
@@ -11,11 +21,19 @@ public class Item {
   private String description;
   private String picture;
 
-
-  
- /**
-  * Default constructor that creates an item with default values:
-  */  
+  /**
+   * Default constructor.
+   *
+   * Initializes default values:
+   * name: "Unknown Item"
+   * weight: 1
+   * max_uses: 1
+   * uses_remaining: 1
+   * value: 0
+   * when_used: an empty string
+   * description: "No description provided."
+   * picture: an empty string
+   */
   public Item() {
     this.name = "Unknown Item";
     this.weight = 1;
@@ -28,8 +46,6 @@ public class Item {
   }
 
 
-  // Getter Methods 
-  
   public String getName() {
 
     return name;
@@ -70,53 +86,33 @@ public class Item {
     return picture;
   }
 
-  // Setter Methods 
+  // setter method
 
-/**
- * Set name.  
- * @param name If null/empty, defaults to "Unknown Item"
- */
- public void setName(String name) {
+  public void setName(String name) {
     if (name == null || name.trim().isEmpty()) {
-        this.name = "Unknown Item";
+      this.name = "Unknown Item";
     } else {
-        this.name = name.trim();
+      this.name = name.trim();
     }
   }
 
-/**
- * Set weight.  
- * @param weight min value is 0. 
- */
   public void setWeight(int weight) {
     this.weight = Math.max(weight, 0);
   }
 
-/** 
- * @param max_uses minimum value is 0. 
- */
   public void setMax_uses(int max_uses) {
     this.max_uses = Math.max(max_uses, 0);
     this.uses_remaining = Math.min(this.uses_remaining, this.max_uses);
   }
 
-  /** 
-  * @param uses_remaining clamped to 0 max_uses range. 
-  */
   public void setUses_remaining(int uses_remaining) {
     this.uses_remaining = Math.min(Math.max(uses_remaining, 0), this.max_uses);
   }
 
-  /** 
-  * @param value Minimum value is 0 
-  */
   public void setValue(int value) {
     this.value = Math.max(value, 0);
   }
 
-  /** 
-  * @param when_used Null becomes empty string. 
-  */
   public void setWhen_used(String when_used) {
     if (when_used != null) {
       this.when_used = when_used;
@@ -125,9 +121,6 @@ public class Item {
     }
   }
 
-  /** 
-  * @param description Null becomes empty string. 
-  */
   public void setDescription(String description) {
     if (description != null) {
       this.description = description;
@@ -136,9 +129,6 @@ public class Item {
     }
   }
 
-  /** 
-  * @param picture Null becomes empty string. 
-  */
   public void setPicture(String picture) {
     if (picture != null) {
       this.picture = picture;
@@ -148,8 +138,8 @@ public class Item {
   }
 
   /**
-   * Uses the item once available. 
-   * @return true if item was used successfully, false if no uses remaining. 
+   * Uses the item once if possible
+   * @return true if item was used successfully, false if no uses remaining
    */
   public boolean use() {
     if (uses_remaining > 0) {
@@ -160,7 +150,7 @@ public class Item {
   }
 
   /**
-   * Restores all uses the item. 
+   * Repairs the item
    */
   public void repair() {
     this.uses_remaining = this.max_uses;
@@ -195,9 +185,9 @@ public class Item {
   }
 
   /**
-   * Compares items by name.
-   * @param obj Object to compare with.
-   * @return true if items have same name.
+   * Compares items by name (case-insensitive)
+   * @param obj Object to compare with
+   * @return true if items have same name (case-insensitive)
    */
   @Override
   public boolean equals(Object obj) {

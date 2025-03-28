@@ -108,7 +108,7 @@ public class GameController {
     if (map.getRooms() == null || map.getRooms().isEmpty()) {
       throw new IllegalStateException("empty map, can't create player");
     }
-    Room startingRoom = map.getRooms().get(0);
+    Room startingRoom = map.getRooms().get(9);
     this.player = new Player(playerName, new ArrayList<>(), startingRoom);
     this.player.setCapacity(13);
   }
@@ -167,10 +167,10 @@ public class GameController {
 
   private Room getNextRoom(Room currentRoom, String direction) {
     int nextRoomNumber = switch (direction) {
-      case "N" -> currentRoom.getN();
-      case "W" -> currentRoom.getW();
-      case "S" -> currentRoom.getS();
-      case "E" -> currentRoom.getE();
+      case "n","north"-> currentRoom.getN();
+      case "w","west" -> currentRoom.getW();
+      case "s","south"-> currentRoom.getS();
+      case "e","east" -> currentRoom.getE();
       default -> -1;
     };
     if (nextRoomNumber < 0) {
@@ -188,9 +188,44 @@ public class GameController {
     return;
   }
 
-  public void lookItem() {
-    return;
+  //public void lookAround() {
+    //view.displayMessage(this.player.getCurrentRoom().getDescription());
+    //view.displayMessage("Items" + this.player.getCurrentRoom().getItem());
+  //}
+
+  // revise it latter.!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  private void lookAround() {
+    Room currentRoom = player.getCurrentRoom();
+    view.displayMessage("\nYou are currently in the " + currentRoom.getDescription() + "\n");
+
+    // get items from rooms
+    view.displayMessage("\nItems: ");
+    for(int i =0;i<currentRoom.getItem().size();i++){
+      view.displayMessage(currentRoom.getItem().get(i).getName());
+    }
+
+    // get fixures from rooms
+    for(int i =0;i<currentRoom.getFixures().size();i++){
+      view.displayMessage(currentRoom.getFixures().get(i).getName());
+    }
+
+    // get ACTIVE!!!!! puzzle from rooms
+    view.displayMessage("\nPuzzles: ");
+    if(currentRoom.getPuzzles() != null){
+      if(currentRoom.getPuzzles().isActive()){
+        view.displayMessage(currentRoom.getPuzzles().getDescription());
+      }
+    }
+
+    // get ACTIVE!!! MONSTER from rooms
+    view.displayMessage("\nMonsters: ");
+    if(currentRoom.getMonsters() != null){
+      if(currentRoom.getMonsters().isActive()){
+        view.displayMessage(currentRoom.getMonsters().getDescription());
+      }
+    }
   }
+
 
 
   //take and drop item --Amy
@@ -221,7 +256,7 @@ public class GameController {
       if (item.getName().equalsIgnoreCase(itemName)) {
         boolean result = player.dropItem(item);
         if (result) {
-          view.displayMessage(itemName + " dropped here in " + player.getCurrentRoom());
+          view.displayMessage(itemName + " dropped here in " + player.getCurrentRoom().getRoom_name());
         } else {
           view.displayMessage("Drop failed: item '"
                   + itemName +
@@ -245,6 +280,8 @@ public class GameController {
       view.displayMessage("The item does not match the Monster's solution.");
     } else if (result == 1) {
       view.displayMessage("Monster solved using the correct item! (Item usage decreased by 1)");
+    }else if (result == -3) {
+      view.displayMessage("Item remaining_use less than 1");
     }
   }
 
@@ -273,6 +310,8 @@ public class GameController {
       view.displayMessage("The item does not match the Puzzle's solution.");
     } else if (result == 1) {
       view.displayMessage("Puzzle solved using the correct item! (Item usage decreased by 1)");
+    } else if (result == -3) {
+      view.displayMessage("Item remaining_use less than 1");
     }
   }
 
@@ -315,7 +354,7 @@ public class GameController {
   }
 
   /**
-   * answer the puzzle.
+   * answer the puzzle by using a magic
    *
    * @param answer string answer of user input
    */
@@ -330,6 +369,76 @@ public class GameController {
     }
     solvePuzzle(answer, puzzle);
   }
+
+  /**
+   * answer the puzzle by using an item
+   *
+   * @param item string answer of user input
+   */
+  public void answerPuzzle_Item(String item) {
+    if (item == null) {
+      view.displayMessage("So what's item you want to use?: ");
+    }
+    Puzzle puzzle = player.getCurrentRoom().getPuzzles();
+    if(puzzle == null) {
+      view.displayMessage("There's no puzzle to be solve.");
+      return;
+    }
+    for(int i =0; i<player.getInventory().size(); i++) {
+      String name =player.getInventory().get(i).getName().trim().toLowerCase();
+      item= item.trim().toLowerCase();
+      if(name.equals(item)) {
+        solvePuzzle(player.getInventory().get(i),puzzle);
+        return;
+      }
+    }
+    view.displayMessage("you don't have this item");
+  }
+
+  /**
+   * answer the puzzle by using a magic
+   *
+   * @param answer string answer of user input
+   */
+  public void answerMonster(String answer) {
+    if (answer == null) {
+      view.displayMessage("So what's your answer?: ");
+    }
+    Monster monster = player.getCurrentRoom().getMonsters();
+    if(monster  == null) {
+      view.displayMessage("There's no puzzle to be solve.");
+      return;
+    }
+    solveMonster(answer, monster);
+  }
+
+  /**
+   * answer the puzzle by using an item
+   *
+   * @param item string answer of user input
+   */
+  public void answerMonster_Item(String item) {
+    if (item == null) {
+      view.displayMessage("So what's item you want to use?: ");
+    }
+    Monster monster = player.getCurrentRoom().getMonsters();
+    if(monster== null) {
+      view.displayMessage("There's no puzzle to be solve.");
+      return;
+    }
+    for(int i =0; i<player.getInventory().size(); i++) {
+      String name =player.getInventory().get(i).getName().trim().toLowerCase();
+      item= item.trim().toLowerCase();
+      if(name.equals(item)) {
+        solveMonster(player.getInventory().get(i),monster);
+        return;
+      }
+    }
+    view.displayMessage("you don't have this item");
+  }
+
+
+
 
   /**
    * quit method.
@@ -347,7 +456,8 @@ public class GameController {
    */
   public void getCommand(String[] command) {
     String action = command[0];
-    String item = command[1];
+    String stuff = command[1];
+
 
     switch (action) {
       case "n", "north", "s", "south", "e", "east", "w", "west":
@@ -357,21 +467,40 @@ public class GameController {
         showInventory();
         break;
       case "t","take":
-        takeItem(item);
+        takeItem(stuff);
         break;
       case "d","drop":
-        dropItem(item);
+        dropItem(stuff);
         break;
       case "x", "examine":
         examineItem();
         break;
       case "l","look":
-        lookItem();
+        lookAround();
         break;
       case "u","use":
+        if(this.player.getCurrentRoom().getPuzzles() != null) {
+        answerPuzzle_Item(stuff);
+      }
+        else if(this.player.getCurrentRoom().getMonsters() != null) {
+          answerMonster_Item(stuff);
+        }
+        else{
+          view.displayMessage("No puzzles nor monsters found.");
+        }
+
+        // USE ITEM TO SOLVE PUZZLE AND monster
         break;
       case "a","answer":
-        answerPuzzle(item);
+        if(this.player.getCurrentRoom().getPuzzles() != null) {
+          answerPuzzle(stuff);
+        }else if(this.player.getCurrentRoom().getMonsters() != null) {
+          answerMonster(stuff);
+        } else{
+          view.displayMessage("No puzzles nor monsters found.");
+        }
+
+
         break;
       case "q","quit":
         quit();

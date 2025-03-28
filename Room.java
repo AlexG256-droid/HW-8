@@ -1,11 +1,11 @@
 import java.util.List;
 
 /**
- * Represents a room in the game environment. 
- * Each room has a name, room number, and a description. 
- * Rooms contain elements suchs as puzzles, monsters, items, and  fixtures. 
+ * Represents a room in the game environment.
+ * Each room has a name, room number, and a description.
+ * Rooms contain elements suchs as puzzles, monsters, items, and  fixtures.
  * Each room also has directional properties (N, S,  E, W).
- * Rooms are connected via directional exits (North, South, East, West). 
+ * Rooms are connected via directional exits (North, South, East, West).
  */
 public class Room {
     private String room_name; // room name
@@ -19,23 +19,23 @@ public class Room {
     private Monster monster; // monster present in room, if any
     private List<Item> item; // list of items in room
     private List<Fixture> fixures; // list of fixtures in room
-    private String picture; // image representing the room 
+    private String picture; // image representing the room
 
     /**
      * Constructs a new Room with the specified attributes.
-     * 
-     * @param room_name the room name. 
-     * @param room_number the number of the room, the number is unique to the room. 
-     * @param description a description of the room. 
-     * @param n the North exit room number. 
-     * @param s the South exit room number. 
-     * @param e the East exit room number. 
-     * @param w the West exit room number. 
-     * @param puzzles the puzzle in room (can be null). 
-     * @param monster the monster in room (can be null). 
-     * @param item the list of items in room. 
+     *
+     * @param room_name the room name.
+     * @param room_number the number of the room, the number is unique to the room.
+     * @param description a description of the room.
+     * @param n the North exit room number.
+     * @param s the South exit room number.
+     * @param e the East exit room number.
+     * @param w the West exit room number.
+     * @param puzzles the puzzle in room (can be null).
+     * @param monster the monster in room (can be null).
+     * @param item the list of items in room.
      * @param fixures the list of fixtures in room.
-     * @param picture the image representing the room. 
+     * @param picture the image representing the room.
      */
     public Room(String room_name, int room_number, String description, int n, int s, int e, int w, Puzzle puzzles, Monster monster, List<Item> item, List<Fixture> fixures, String picture) {
         this.room_name = room_name;
@@ -56,7 +56,7 @@ public class Room {
 
     /**
      * Returns the name of room.
-     * @return the room name. 
+     * @return the room name.
      */
     public String getRoom_name() {
         return room_name;
@@ -64,12 +64,12 @@ public class Room {
 
     /**
      * Returns the number (unique) assigned to the room.
-     * @return the room number. 
+     * @return the room number.
      */
     public int getRoom_number() {
         return room_number;
     }
-    
+
 
     /**
      * Returns the description of the room.
@@ -125,8 +125,8 @@ public class Room {
     }
 
     /**
-    * Helper function that set Room's direction to passable by converting to absolute values. 
-    */ 
+     * Helper function that set Room's direction to passable by converting to absolute values.
+     */
     public void setRoomToPassable() {
         this.N = Math.abs(this.N);
         this.W = Math.abs(this.W);
@@ -134,10 +134,9 @@ public class Room {
         this.S = Math.abs(this.S);
     }
 
-    // Getters for room properties 
+    // Getters for room properties
     /**
      * Helper function that return the original descritption
-     *@return original description
      */
     public String getOriginalDescription() {
         return description;

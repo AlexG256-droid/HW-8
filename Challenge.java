@@ -1,7 +1,4 @@
 
-
-
-
 public abstract class Challenge {
   // common code represents the status of the operation
   public static final int SOLVE_SUCCESS = 1;
@@ -12,6 +9,8 @@ public abstract class Challenge {
   public static final int SOLVE_WRONG_TYPE = 0;
   // An invalid or unexpected condition occurred, such as a null puzzle or item.
   public static final int SOLVE_ERROR = -2;
+  public static final int SOLVE_VERY_FAIL = -3;
+  //when item remaining use is less than 1
 
   // Common attributes for Puzzle and Monster
   protected String name;

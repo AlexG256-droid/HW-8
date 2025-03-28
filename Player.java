@@ -52,6 +52,12 @@ public class Player {
     }
   }
 
+  public boolean pickUpItem(Fixture fixture) {
+    return false;
+  }
+
+
+
   /**
    * Drop item to the room.
    * @param droppedItem drop item
@@ -218,7 +224,8 @@ public class Player {
       return Challenge.SOLVE_ERROR;
     }
     if (item.getUses_remaining() < MAXIMUMREMAININGUSES) {
-      return Challenge.SOLVE_FAIL;
+      return Challenge.SOLVE_VERY_FAIL;
+      //when item remaining less than 1 return -3
     }
     Integer result = puzzle.solve(item);
     if (result == Challenge.SOLVE_SUCCESS && !puzzle.isActive()) {
@@ -261,17 +268,17 @@ public class Player {
    */
   public Integer solveMonster(Item item, Monster monster) {
     if (monster == null || item == null) {
-      // return("not a valid puzzle or item")
       return Challenge.SOLVE_ERROR;
     }
-    int result = monster.solve(item);
+    if (item.getUses_remaining() < MAXIMUMREMAININGUSES) {
+      return Challenge.SOLVE_VERY_FAIL;
+      //when item remaining less than 1 return -3
+    }
+    Integer result = monster.solve(item);
     if (result == Challenge.SOLVE_SUCCESS && !monster.isActive()) {
       this.score += monster.getValue();
       item.setUses_remaining(item.getUses_remaining() - MAXIMUMREMAININGUSES);
-      // set room to passable for all direction
-      // once the puzzle or monster being solved
       this.currentRoom.setRoomToPassable();
-      // if getUsesRemaining < 1, remove item
       if (item.getUses_remaining() < MAXIMUMREMAININGUSES) {
         currentRoom.getItem().remove(item);
       }
@@ -345,13 +352,13 @@ public class Player {
     // using switch case to try to catch direction
     // blockedMessage = "West is being permanently blocked";
     nextRoomNumber = switch (Direction) {
-      case "N" -> this.currentRoom.getN();
+      case "n","north" -> this.currentRoom.getN();
       // blockedMessage = "North is being permanently blocked";
-      case "E" -> this.currentRoom.getE();
+      case "e","east" -> this.currentRoom.getE();
       // blockedMessage = "East is being permanently blocked";
-      case "S" -> this.currentRoom.getS();
+      case "s","south" -> this.currentRoom.getS();
       // blockedMessage = "South is being permanently blocked";
-      case "W" -> this.currentRoom.getW();
+      case "w","west"-> this.currentRoom.getW();
       default -> nextRoomNumber;
     };
     return nextRoomNumber;

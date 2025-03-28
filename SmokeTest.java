@@ -8,8 +8,6 @@ public class SmokeTest {
       GameController gameController = new GameController(jsonPath);
       System.out.println("GameController successfully initialized。");
 
-      System.out.println("initial room " + gameController.getMap().getRooms().get(0).getRoom_name());
-      
       gameController.gameLoop();
     } catch (IOException e) {
       System.err.println("error " + e.getMessage());

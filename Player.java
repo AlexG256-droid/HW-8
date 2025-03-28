@@ -32,7 +32,7 @@ public class Player {
   /**
    * Pick up the item.
    * @param pickedItem item
-   * @return return int -1 means capacity exceed limit,0 succeed
+   * @return return false means capacity exceed limit,0 succeed
    */
   public boolean pickUpItem(Item pickedItem) {
     int sum = MINIMUM;

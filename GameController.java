@@ -256,7 +256,7 @@ public class GameController {
   // look method and examine --Alexender
 
   //take and drop item --Amy
-  public String takeItem(String itemName) {
+  public void takeItem(String itemName) {
     Room currentRoom = player.getCurrentRoom();
     List<Item> roomItems = currentRoom.getItem();
 
@@ -266,29 +266,33 @@ public class GameController {
         it.remove();
         boolean result = player.pickUpItem(item);
         if (result) {
-          return itemName + " added to your inventory.";
+          view.displayMessage(itemName + " added to your inventory.");
         } else {
-          return "Weight exceeds capacity, cannot pick up " + itemName + ".";
+          view.displayMessage("Weight exceeds capacity, cannot pick up " + itemName + ".");
         }
+        return;
       }
     }
-    return "Item '" + itemName + "' not found in this room.";
+    view.displayMessage("Item '" + itemName + "' not found in this room.");
   }
 
-  public String dropItem(String itemName) {
+  public void dropItem(String itemName) {
     List<Item> inventory = player.getInventory();
     for (Iterator<Item> it = inventory.iterator(); it.hasNext();) {
       Item item = it.next();
       if (item.getName().equalsIgnoreCase(itemName)) {
         boolean result = player.dropItem(item);
         if (result) {
-          return itemName + " dropped here in " + player.getCurrentRoom();
+          view.displayMessage(itemName + " dropped here in " + player.getCurrentRoom());
         } else {
-          return "Error dropping " + itemName + ".";
+          view.displayMessage("Drop failed: item '"
+                  + itemName +
+                  "' could not be removed from inventory.");
         }
+        return;
       }
     }
-    return "You don't have item '" + itemName + "' in your inventory.";
+    view.displayMessage("You don't have an item named '" + itemName + "' in your inventory.");
   }
   
 

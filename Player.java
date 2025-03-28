@@ -1,7 +1,9 @@
 import java.util.List;
 
 /**
- * The class represents the Player Class.
+ * Represents the Player Class, with attributes like name, score, health, inventory.
+ * and current location. 
+ * the player is able to engage with items, puzzles, and monsters. 
  */
 public class Player {
   private String name; // no exits in Player class in UML - need discussion
@@ -18,7 +20,10 @@ public class Player {
   private final int MAXIMUMCAPACITY = 13;
 
   /**
-   * Player constructor.
+   * Player constructor with specified attributes. 
+   * @param name The player's name. 
+   * @param inventory List of intitial inventory list.  
+   * @param currentRoom Starting room location. 
    */
   public Player(String name, List<Item> inventory, Room currentRoom) {
     this.name = name;
@@ -30,9 +35,9 @@ public class Player {
   }
 
   /**
-   * Pick up the item.
-   * @param pickedItem item
-   * @return return false means capacity exceed limit,0 succeed
+   * Pick up the item and add it to the inventory. 
+   * @param pickedItem Item to pick up. 
+   * @return true if item was added to inventory successfully, otherwise false. 
    */
   public boolean pickUpItem(Item pickedItem) {
     int sum = MINIMUM;
@@ -53,9 +58,9 @@ public class Player {
   }
 
   /**
-   * Drop item to the room.
-   * @param droppedItem drop item
-   *@return return true means success ,false otherwise
+   * Drop item from inventory to the current room.
+   * @param droppedItem dropped item. 
+   *@return return true means success, false otherwise
    */
   public boolean dropItem(Item droppedItem) {
     // Check if the inventory contains the dropped item
@@ -327,6 +332,13 @@ public class Player {
     }
   }
 
+   /**
+     * Determines the next room number this is based on current room location and direction.
+     * @param direction The direction to check. 
+     * @return Room number in specified direction,
+     *         0 if permanently blocked,
+     *         negative if blocked by puzzle/monster
+     */
   public int getNextRoomNumber(String Direction) {
     int nextRoomNumber = -1;
     // using switch case to try to catch direction

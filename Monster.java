@@ -85,9 +85,14 @@ public class Monster extends Challenge {
 
   @Override
   public Integer solve(String magicWord) {
+
+    // delete all the punctions white space
+    String processedSolution = solution.replaceAll("[\\p{Punct}\\s]", "");
+    String processedMagicWord = magicWord.replaceAll("[\\p{Punct}\\s]", "");
+
     if (!(solution.startsWith("'") || solution.endsWith("'"))) {
       return SOLVE_WRONG_TYPE;
-    } else if (solution.equalsIgnoreCase(magicWord)) {
+    } else if (processedSolution.equalsIgnoreCase(processedMagicWord)) {
       this.active = false;
       return SOLVE_SUCCESS;
     } else {

@@ -43,11 +43,16 @@ public class Puzzle extends Challenge {
    */
   @Override
   public Integer solve(String magicWord) {
+
+    // delete all the punctions white space
+    String processedSolution = solution.replaceAll("[\\p{Punct}\\s]", "");
+    String processedMagicWord = magicWord.replaceAll("[\\p{Punct}\\s]", "");
+
     if (!(solution.startsWith("'") || solution.endsWith("'"))) {
       // "solution is a item not a text"
       return SOLVE_WRONG_TYPE;
       // if solution is a item instead of a string
-    } else if (solution.equalsIgnoreCase(magicWord)) {
+    } else if (processedSolution.equalsIgnoreCase(processedMagicWord)) {
       // check if solution equal to magic word
       this.active = false;
       // "Puzzle solved using the correct magic word!"

@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="HW-8">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/jackson-databind-2.18.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jsonreader.zip!/" />
+      <root url="jar://$PROJECT_DIR$/jackson-core-2.18.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jackson-annotations-2.18.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

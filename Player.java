@@ -105,7 +105,7 @@ public class Player {
    * Setter function - set the score of the player
    * @param score of the player
    */
-  private boolean setScore(Integer score) {
+  public boolean setScore(Integer score) {
     if (score >= MINIMUM) {
       this.score = score;
       return true;

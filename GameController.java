@@ -1,3 +1,4 @@
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -128,7 +129,6 @@ public class GameController {
   // view put inside controller
 
   //move method -- Yijie Li
-
   /**
    * control the movement for player
    *
@@ -137,32 +137,25 @@ public class GameController {
   public void movePlayer(String direction) {
     int moveResult = player.move(direction, map);
     HealthStatus healthStatus = player.getHealthStatus();
+    Room nextRoom = player.findRoomByNumber(player.getNextRoomNumber(direction),map);
 
-    // display blocking message according to the next room
-    Room nextRoom = getNextRoom(player.getCurrentRoom(),direction);
-    String blockMessage;
-    if (nextRoom != null) {
-      blockMessage = nextRoom.getDescription();
-    } else {
-      blockMessage = "You can't go that way.";
-    }
-
+    String message = "";
     // control the view display according to the result of the player move
     switch (moveResult) {
       case 1:
-        view.displayMessage("You enter the  " + player.getCurrentRoom().getRoom_name());
+        message = ("You enter the  " + player.getCurrentRoom().getRoom_name());
         break;
       case 0:
-        view.displayMessage(" >> You cannot go into that direction! \n" + healthStatus.getHealthMessage());
+        message = (" >> You cannot go into that direction! \n" + healthStatus.getHealthMessage());
         break;
       case -1:
-        view.displayMessage("The path is blocked "+ blockMessage);
+        message = "The path is blocked " + nextRoom.getDescription();
         break;
       case -2:
-        view.displayMessage("Invalid direction! \n Can only use N, W, S, E");
+        message = "Seems like there's no room....";
         break;
     }
-
+    view.displayMessage(message);
   }
 
   private Room getNextRoom(Room currentRoom, String direction) {
@@ -520,8 +513,8 @@ public class GameController {
         break;
       case "u","use":
         if(this.player.getCurrentRoom().getPuzzles() != null) {
-        answerPuzzle_Item(stuff);
-      }
+          answerPuzzle_Item(stuff);
+        }
         else if(this.player.getCurrentRoom().getMonsters() != null) {
           answerMonster_Item(stuff);
         }
@@ -562,7 +555,6 @@ public class GameController {
       getCommand(command);
     }
   }
-
 
   // save and load game -- Chen
 

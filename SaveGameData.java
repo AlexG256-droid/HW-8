@@ -69,7 +69,7 @@ public class SaveGameData {
         roomNode.put("items", (String) null);
       }
       // for fixtures: join the list into a comma  separated string
-      List<Fixture> roomFixtures = room.getFixures();
+      List<Fixture> roomFixtures = room.getFixtures();
       if (roomFixtures != null && roomFixtures.size() > 0) {
         StringBuilder sb2 = new StringBuilder();
         for (int j = 0; j < roomFixtures.size(); j++) {
@@ -119,7 +119,7 @@ public class SaveGameData {
     // construct the "fixtures" array (from all rooms)
     Set<Fixture> fixtureSet = new HashSet<>();
     for (int i = 0; i < rooms.size(); i++) {
-      List<Fixture> roomFixtures = rooms.get(i).getFixures();
+      List<Fixture> roomFixtures = rooms.get(i).getFixtures();
       if (roomFixtures != null) {
         fixtureSet.addAll(roomFixtures);
       }
@@ -198,7 +198,7 @@ public class SaveGameData {
     // write the constructed JSON object to the file
     try {
       mapper.writeValue(new File(outputPath), root);
-      System.out.println("Game data has been saved to " + outputPath);
+
     } catch (IOException e) {
       e.printStackTrace();
     }

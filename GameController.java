@@ -119,6 +119,17 @@ public class GameController {
   }
 
 
+  /**
+   * Saves the current game state, including game data and player data.
+   *
+   * @param gameDataOutputPath   the file path to save the game data.
+   * @param playerDataOutputPath the file path to save the player data.
+   */
+  public void save(String gameDataOutputPath, String playerDataOutputPath) {
+    SaveGameData.saveGameData(this.map, gameDataOutputPath);
+    SavePlayerData.savePlayer(this.player, playerDataOutputPath);
+  }
+
   // view put inside controller
 
   //move method -- Yijie Li
@@ -483,7 +494,7 @@ public class GameController {
   public void getCommand(String[] command) {
     String action = command[0];
     String stuff = command[1];
-  // 做任何action 都挨打
+    // 做任何action 都挨打
 
     switch (action) {
       case "n", "north", "s", "south", "e", "east", "w", "west":
@@ -525,11 +536,30 @@ public class GameController {
         } else{
           view.displayMessage("No puzzles nor monsters found.");
         }
-
-
         break;
       case "q","quit":
         quit();
+        break;
+      case "save":
+        //
+        save("D:\\document-new semster\\CS-5004\\hw8\\save\\align_quest_game_elements_game.json",
+                "D:\\document-new semster\\CS-5004\\hw8\\save\\align_quest_game_elements_player.json");
+        view.displayMessage("Game saved.");
+        break;
+      case "load":
+        try {
+          this.map = LoadGameData.loadMap("D:\\document-new semster\\CS-5004\\hw8\\save\\align_quest_game_elements_game.json");
+          Player loadedPlayer = PlayerLoad.loadPlayer(
+                  "D:\\document-new semster\\CS-5004\\hw8\\save\\align_quest_game_elements_player.json",
+                  "D:\\document-new semster\\CS-5004\\hw8\\save\\align_quest_game_elements_game.json",
+                  this.map
+          );
+          this.player = loadedPlayer;
+          view.displayMessage("Game loaded.");
+        } catch (IOException e) {
+          e.printStackTrace();
+          view.displayMessage("Error loading game.");
+        }
         break;
       default:
         view.displayMessage("Invalid command: " + action);

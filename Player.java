@@ -9,6 +9,7 @@ public class Player {
   private Integer health;
   private List<Item> inventory;
   private Integer capacity;
+  // max capacity you can carry
   private Room currentRoom;
 
   private final int MINIMUM = 0;
@@ -25,7 +26,7 @@ public class Player {
     this.score = MINIMUM;
     this.health = MAXIMUMHEALTH;
     this.inventory = inventory;
-    this.capacity = MINIMUM;
+    this.capacity = MAXIMUMCAPACITY;
     this.currentRoom = currentRoom;
   }
 
@@ -233,7 +234,7 @@ public class Player {
       item.setUses_remaining(item.getUses_remaining() - MAXIMUMREMAININGUSES);
       this.currentRoom.setRoomToPassable();
       if (item.getUses_remaining() < MAXIMUMREMAININGUSES) {
-        currentRoom.getItem().remove(item);
+        inventory.remove(item);
       }
     }
     return result;
@@ -280,7 +281,7 @@ public class Player {
       item.setUses_remaining(item.getUses_remaining() - MAXIMUMREMAININGUSES);
       this.currentRoom.setRoomToPassable();
       if (item.getUses_remaining() < MAXIMUMREMAININGUSES) {
-        currentRoom.getItem().remove(item);
+        inventory.remove(item);
       }
     }
     return result;

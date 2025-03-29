@@ -114,12 +114,6 @@ public class GameController {
   }
 
 
-
-
-
-
-
-
   public Map getMap() {
     return this.map;
   }
@@ -199,7 +193,7 @@ public class GameController {
     view.displayMessage("\nPuzzles:");
     if (currentRoom.getPuzzles() != null) {
       if (currentRoom.getPuzzles().isActive()) {
-        view.displayMessage("  → " + currentRoom.getPuzzles().getDescription());
+        view.displayMessage("  → " + currentRoom.getPuzzles().getName());
       }
     }
 
@@ -207,7 +201,7 @@ public class GameController {
     view.displayMessage("\nMonsters:");
     if (currentRoom.getMonsters() != null) {
       if (currentRoom.getMonsters().isActive()) {
-        view.displayMessage("  → " + currentRoom.getMonsters().getDescription());
+        view.displayMessage("  → " + currentRoom.getMonsters().getName());
       }
     }
   }
@@ -489,7 +483,7 @@ public class GameController {
   public void getCommand(String[] command) {
     String action = command[0];
     String stuff = command[1];
-
+  // 做任何action 都挨打
 
     switch (action) {
       case "n", "north", "s", "south", "e", "east", "w", "west":

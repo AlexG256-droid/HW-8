@@ -1,10 +1,10 @@
 # HW-8
 
-For HW 7, we had a very general and broad idea of what classes, interfaces, and sequences our group wanted for our implementation of our project. We had very basic methods planned out for each of our classes/interfaces. For HW 8, we added some additional classes that we thought would be useful to make our test cases work. We also expanded our UML from HW 7 to match our most recent design of the project.
+For HW 7, we had a very general and broad idea of what classes, interfaces, and sequences our group wanted for our implementation of our project. We initially had very basic methods planned out for each of our classes/interfaces. For HW 8, we added some additional classes and methods that we thought would be more useful to make our test cases work. We also expanded our UML from HW 7 to match our most recent design of the project.
 
 Item (class): We initially had Item designed as an interface for multiple "item" classes, but for HW 8 we ended up deciding to make it an individual class to make things simpler. We also added extra variable names and methods (mostly getters and setters) to calculate the remaining number of uses, its value, and determining whether or not the item is currently being used by the player.
 
-Player: We added methods so that the player class can move the player by assigning the avatar to different rooms, determine whether or not the avatar is asleep, get the room number of the "next room" about to be entered, "solve" or defeat monsters, pick up or drop an item, and check the avatar's inventory.
+Player: Generally, we added more methods than what we had for HW 7. This is so that the player class can move the player by assigning the avatar to different rooms, determining whether or not the avatar is asleep, getting the room number of the "next room" about to be entered, "solving" or defeating monsters, picking up or dropping an item, and checking the avatar's inventory.
 
 GameController: This class determines how the user's input with the use of the standard MVC architectural pattern. The input is determined by each of the methods in the class (e.g. (M) for movePlayer (String direction), which moves the player to a different room depending on the given direction).
 

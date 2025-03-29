@@ -3,7 +3,7 @@ import java.util.List;
 /**
  * Represents a room in the game environment.
  * Each room has a name, room number, and a description.
- * Rooms contain elements suchs as puzzles, monsters, items, and  fixtures.
+ * Rooms contain elements such as puzzles, monsters, items, and  fixtures.
  * Each room also has directional properties (N, S,  E, W).
  * Rooms are connected via directional exits (North, South, East, West).
  */
@@ -18,7 +18,7 @@ public class Room {
     private Puzzle puzzle; // puzzle present in room, if any
     private Monster monster; // monster present in room, if any
     private List<Item> item; // list of items in room
-    private List<Fixture> fixures; // list of fixtures in room
+    private List<Fixture> fixtures; // list of fixtures in room
     private String picture; // image representing the room
 
     /**
@@ -34,10 +34,10 @@ public class Room {
      * @param puzzles the puzzle in room (can be null).
      * @param monster the monster in room (can be null).
      * @param item the list of items in room.
-     * @param fixures the list of fixtures in room.
+     * @param fixtures the list of fixtures in room.
      * @param picture the image representing the room.
      */
-    public Room(String room_name, int room_number, String description, int n, int s, int e, int w, Puzzle puzzles, Monster monster, List<Item> item, List<Fixture> fixures, String picture) {
+    public Room(String room_name, int room_number, String description, int n, int s, int e, int w, Puzzle puzzles, Monster monster, List<Item> item, List<Fixture> fixtures, String picture) {
         this.room_name = room_name;
         this.room_number = room_number;
         this.description = description;
@@ -48,7 +48,7 @@ public class Room {
         this.puzzle = puzzles;
         this.monster = monster;
         this.item = item;
-        this.fixures = fixures;
+        this.fixtures = fixtures;
         this.picture = picture;
     }
 
@@ -151,7 +151,7 @@ public class Room {
     }
 
     public List<Fixture> getFixtures() {
-        return fixures;
+        return fixtures;
     }
 
     public String getPicture() {
@@ -202,8 +202,8 @@ public class Room {
         this.item = item;
     }
 
-    public void setFixures(List<Fixture> fixures) {
-        this.fixures = fixures;
+    public void setFixtures(List<Fixture> fixtures) {
+        this.fixtures = fixtures;
     }
 
     public void setPicture(String picture) {

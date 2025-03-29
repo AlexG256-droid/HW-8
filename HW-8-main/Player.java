@@ -145,6 +145,7 @@ public class Player {
       return true;
     } else {
       // If health of the player is out of range it's false
+      this.health = MINIMUM;
       return false;
     }
   }

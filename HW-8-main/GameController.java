@@ -151,7 +151,7 @@ public class GameController {
     // control the view display according to the result of the player move
     switch (moveResult) {
       case 1:
-        message = ("You enter the  " + player.getCurrentRoom().getRoom_name());
+        message = ("You enter the " + player.getCurrentRoom().getRoom_name());
         break;
       case 0:
         message = (" >> You cannot go into that direction! \n" + healthStatus.getHealthMessage());
@@ -266,9 +266,9 @@ public class GameController {
     for (Iterator<Item> it = roomItems.iterator(); it.hasNext();) {
       Item item = it.next();
       if (item.getName().equalsIgnoreCase(itemName)) {
-        it.remove();
         boolean result = player.pickUpItem(item);
         if (result) {
+          it.remove();
           view.displayMessage(itemName + " added to your inventory.");
         } else {
           view.displayMessage("Weight exceeds capacity, cannot pick up " + itemName + ".");
@@ -480,19 +480,27 @@ public class GameController {
    */
   public void quit() {
     String ranking = ranking();
-    view.displayMessage("Thanks for playing!\nYour score is " + player.getScore() + "\n" + ranking);
+    int score = player.getScore();
+    for (Item item : player.getInventory()) {
+      score += item.getValue();
+    }
+    view.displayMessage("Thanks for playing!\nYour score is " + score + "\n" + ranking);
     System.exit(0);
   }
 
+
   private String ranking() {
     int score = player.getScore();
-    if (score > 700) {
+    for (Item item : player.getInventory()) {
+      score += item.getValue();
+    }
+    if (score > 2000) {
       return "You got an A! You're a true explorer";
-    } else if (score > 600) {
+    } else if (score > 1500) {
       return "You got an B! Great job!";
-    } else if (score > 500) {
+    } else if (score > 1000) {
       return "You got an C! That's good!";
-    } else if (score > 400) {
+    } else if (score > 500) {
       return "You got an D! Nice!";
     } else {
       return "You got an F......at least you enjoyed!";
@@ -507,6 +515,7 @@ public class GameController {
   public void getCommand(String[] command) {
     String action = command[0];
     String stuff = command[1];
+    System.out.println(player.getScore());
 
     // if got defeated, game over
     if (handleMonsterEncounter()) return;
@@ -554,12 +563,13 @@ public class GameController {
   // handle monster encounters before executing any commands
   private boolean handleMonsterEncounter() {
     Monster monster = player.getCurrentRoom().getMonsters();
-    if (monster != null) {
+    // only where there's monster and is active
+    if (monster != null && monster.isActive()) {
       monster.attackPlayer(player);
-      view.displayMessage(monster.getEffects() + "\n" + monster.getName().toUpperCase() +
-              monster.getAttack() + "\nPlayer takes " + monster.getDamage() + " damage!"
+      view.displayMessage(monster.getEffects() + "\n" + monster.getName().toUpperCase() + " "
+              + monster.getAttack() + "\nPlayer takes " + monster.getDamage() + " damage!\n"
               + player.getHealthStatus().getHealthMessage());
-
+      view.displayMessage("player health: " + player.getHealth());
       if (player.getHealthStatus() == HealthStatus.SLEEP) {
         view.displayMessage("Go to sleep, soldier...");
         quit();

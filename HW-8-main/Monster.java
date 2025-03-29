@@ -67,7 +67,7 @@ public class Monster extends Challenge {
    */
   public boolean attackPlayer(Player player) {
     int playerHealth = player.getHealth();
-    return player.setHealth(playerHealth - this.damage);
+    return player.setHealth(playerHealth + this.damage);
   }
 
   @Override

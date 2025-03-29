@@ -170,7 +170,7 @@ public class Room {
         return item;
     }
 
-    public List<Fixture> getFixures() {
+    public List<Fixture> getFixtures() {
         return fixures;
     }
 

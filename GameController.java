@@ -1,4 +1,3 @@
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -192,8 +191,8 @@ public class GameController {
 
     // get fixures from rooms
     view.displayMessage("\nFixtures present in the room:");
-    for (int i = 0; i < currentRoom.getFixures().size(); i++) {
-      view.displayMessage("  • " + currentRoom.getFixures().get(i).getName());
+    for (int i = 0; i < currentRoom.getFixtures().size(); i++) {
+      view.displayMessage("  • " + currentRoom.getFixtures().get(i).getName());
     }
 
     // get ACTIVE!!!!! puzzle from rooms
@@ -233,9 +232,9 @@ public class GameController {
     }
 
     // check current room has this fixure
-    for (int i = 0; i < currentRoom.getFixures().size(); i++) {
-      if (currentRoom.getFixures().get(i).getName().equalsIgnoreCase(stuff)) {
-        view.displayMessage("\nFixture: " + currentRoom.getFixures().get(i).getDescription());
+    for (int i = 0; i < currentRoom.getFixtures().size(); i++) {
+      if (currentRoom.getFixtures().get(i).getName().equalsIgnoreCase(stuff)) {
+        view.displayMessage("\nFixture: " + currentRoom.getFixtures().get(i).getDescription());
       }
     }
 

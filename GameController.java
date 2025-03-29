@@ -254,8 +254,6 @@ public class GameController {
     }
   }
 
-
-
   //take and drop item --Amy
   public void takeItem(String itemName) {
     Room currentRoom = player.getCurrentRoom();
@@ -304,7 +302,6 @@ public class GameController {
     }
     view.displayMessage("You don't have an item named '" + itemName + "' in your inventory.");
   }
-
 
   public void solveMonster(Item item, Monster monster) {
     int result = player.solveMonster(item, monster);
@@ -474,17 +471,29 @@ public class GameController {
     view.displayMessage("you don't have this item");
   }
 
-
-
-
   /**
    * quit method.
    */
   public void quit() {
-    view.displayMessage("Thanks for playing!\nYour score is " + player.getScore());
+    String ranking = ranking();
+    view.displayMessage("Thanks for playing!\nYour score is " + player.getScore() + "\n" + ranking);
     System.exit(0);
   }
 
+  private String ranking() {
+    int score = player.getScore();
+    if (score > 700) {
+      return "You got an A! You're a true explorer";
+    } else if (score > 600) {
+      return "You got an B! Great job!";
+    } else if (score > 500) {
+      return "You got an C! That's good!";
+    } else if (score > 400) {
+      return "You got an D! Nice!";
+    } else {
+      return "You got an F......at least you enjoyed!";
+    }
+  }
 
   /**
    * process the command.
@@ -494,7 +503,9 @@ public class GameController {
   public void getCommand(String[] command) {
     String action = command[0];
     String stuff = command[1];
-    // 做任何action 都挨打
+
+    // if got defeated, game over
+    if (handleMonsterEncounter()) return;
 
     switch (action) {
       case "n", "north", "s", "south", "e", "east", "w", "west":
@@ -516,56 +527,91 @@ public class GameController {
         lookAround();
         break;
       case "u","use":
-        if(this.player.getCurrentRoom().getPuzzles() != null) {
-          answerPuzzle_Item(stuff);
-        }
-        else if(this.player.getCurrentRoom().getMonsters() != null) {
-          answerMonster_Item(stuff);
-        }
-        else{
-          view.displayMessage("No puzzles nor monsters found.");
-        }
-
-        // USE ITEM TO SOLVE PUZZLE AND monster
+        handleUseCommand(stuff);
         break;
       case "a","answer":
-        if(this.player.getCurrentRoom().getPuzzles() != null) {
-          answerPuzzle(stuff);
-        }else if(this.player.getCurrentRoom().getMonsters() != null) {
-          answerMonster(stuff);
-        } else{
-          view.displayMessage("No puzzles nor monsters found.");
-        }
+        handleAnswerCommand(stuff);
         break;
       case "q","quit":
         quit();
         break;
       case "save":
-        //
-        save("D:\\document-new semster\\CS-5004\\hw8\\save\\align_quest_game_elements_game.json",
-                "D:\\document-new semster\\CS-5004\\hw8\\save\\align_quest_game_elements_player.json");
-        view.displayMessage("Game saved.");
+        saveGame();
         break;
       case "load":
-        try {
-          this.map = LoadGameData.loadMap("D:\\document-new semster\\CS-5004\\hw8\\save\\align_quest_game_elements_game.json");
-          Player loadedPlayer = PlayerLoad.loadPlayer(
-                  "D:\\document-new semster\\CS-5004\\hw8\\save\\align_quest_game_elements_player.json",
-                  "D:\\document-new semster\\CS-5004\\hw8\\align_quest_game_elements.json",
-                  this.map
-          );
-          this.player = loadedPlayer;
-          view.displayMessage("Game loaded.");
-        } catch (IOException e) {
-          e.printStackTrace();
-          view.displayMessage("Error loading game.");
-        }
+        loadGame();
         break;
       default:
         view.displayMessage("Invalid command: " + action);
         break;
     }
   }
+
+  // handle monster encounters before executing any commands
+  private boolean handleMonsterEncounter() {
+    Monster monster = player.getCurrentRoom().getMonsters();
+    if (monster != null) {
+      monster.attackPlayer(player);
+      view.displayMessage(monster.getEffects() + "\n" + monster.getName().toUpperCase() +
+              monster.getAttack() + "\nPlayer takes " + monster.getDamage() + " damage!"
+              + player.getHealthStatus().getHealthMessage());
+
+      if (player.getHealthStatus() == HealthStatus.SLEEP) {
+        view.displayMessage("Go to sleep, soldier...");
+        quit();
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // when user input "use" for solving puzzles/monsters
+  private void handleUseCommand(String item) {
+    Room currentRoom = player.getCurrentRoom();
+    if (currentRoom.getPuzzles() != null) {
+      answerPuzzle_Item(item);
+    } else if (currentRoom.getMonsters() != null) {
+      answerMonster_Item(item);
+    } else {
+      view.displayMessage("No puzzles nor monsters found.");
+    }
+  }
+
+  // when user input "answer" for solving puzzles/monsters
+  private void handleAnswerCommand(String answer) {
+    Room currentRoom = player.getCurrentRoom();
+    if (currentRoom.getPuzzles() != null) {
+      answerPuzzle(answer);
+    } else if (currentRoom.getMonsters() != null) {
+      answerMonster(answer);
+    } else {
+      view.displayMessage("No puzzles nor monsters found.");
+    }
+  }
+
+  // save game
+  private void saveGame() {
+    save("D:\\document-new semster\\CS-5004\\hw8\\save\\align_quest_game_elements_game.json",
+            "D:\\document-new semster\\CS-5004\\hw8\\save\\align_quest_game_elements_player.json");
+    view.displayMessage("Game saved.");
+  }
+
+  // load the game
+  private void loadGame() {
+    try {
+      this.map = LoadGameData.loadMap("D:\\document-new semster\\CS-5004\\hw8\\save\\align_quest_game_elements_game.json");
+      Player loadedPlayer = PlayerLoad.loadPlayer(
+              "D:\\document-new semster\\CS-5004\\hw8\\save\\align_quest_game_elements_player.json",
+              "D:\\document-new semster\\CS-5004\\hw8\\align_quest_game_elements.json",
+              this.map);
+      this.player = loadedPlayer;
+      view.displayMessage("Game loaded.");
+    } catch (IOException e) {
+      e.printStackTrace();
+      view.displayMessage("Error loading game.");
+    }
+  }
+
 
   /**
    * while the game is not over, continue to fetch command from user input.

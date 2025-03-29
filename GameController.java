@@ -277,7 +277,16 @@ public class GameController {
         return;
       }
     }
-    view.displayMessage("Item '" + itemName + "' not found in this room.");
+    // Determine if the item player inputted is fixture
+    for (Fixture fixture : currentRoom.getFixtures()) {
+      if (fixture.getName().equalsIgnoreCase(itemName)) {
+        view.displayMessage(itemName + " is a immovable fixture. You can't pick that up.");
+        return;
+      }
+    }
+
+    // Nothing found in fixtures and items list
+    view.displayMessage("No item or fixture named '" + itemName + "' found in this room.");
   }
 
   public void dropItem(String itemName) {

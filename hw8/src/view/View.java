@@ -15,6 +15,7 @@ public class View {
    * get the player name.
    */
   public String getPlayerName() {
+    System.out.println("\n===== Welcome to the Game! =====");
     System.out.println("Enter your name: ");
     playerName = scanner.nextLine().trim();
     return playerName;
@@ -24,7 +25,7 @@ public class View {
    * display the game menu.
    */
   public void displayMenu() {
-    System.out.println("\n===== Welcome to the Game! =====");
+    System.out.println("\n===== Game Menu=====");
     System.out.println("To move, enter: (N)orth, (S)outh, (E)ast, or (W)est.");
     System.out.println("Other actions: ");
     System.out.println(" - (I)nventory: Check your items.");
@@ -34,6 +35,8 @@ public class View {
     System.out.println(" - (D)rop: Drop an item.");
     System.out.println(" - (X)amine: Examine something closely.");
     System.out.println(" - (A)nswer: Answer a question or provide a text solution.");
+    System.out.println(" - Save: Save the game.(enter full word)");
+    System.out.println(" - Load: load the game.(enter full word)");
     System.out.println(" - (Q)uit: Exit the game.");
     System.out.println("===================================");
   }

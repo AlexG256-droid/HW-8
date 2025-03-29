@@ -551,7 +551,7 @@ public class GameController {
           this.map = LoadGameData.loadMap("D:\\document-new semster\\CS-5004\\hw8\\save\\align_quest_game_elements_game.json");
           Player loadedPlayer = PlayerLoad.loadPlayer(
                   "D:\\document-new semster\\CS-5004\\hw8\\save\\align_quest_game_elements_player.json",
-                  "D:\\document-new semster\\CS-5004\\hw8\\save\\align_quest_game_elements_game.json",
+                  "D:\\document-new semster\\CS-5004\\hw8\\align_quest_game_elements.json",
                   this.map
           );
           this.player = loadedPlayer;

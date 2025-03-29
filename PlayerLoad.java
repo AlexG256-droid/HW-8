@@ -32,32 +32,23 @@ public class PlayerLoad {
       int health = playerNode.get("health").asInt();
       int capacity = playerNode.get("capacity").asInt();
 
-      // process inventory
+      // process inventory as string array, then look up matching items from gameData
       List<Item> inventory = new ArrayList<>();
       JsonNode inventoryNode = playerNode.get("inventory");
       if (inventoryNode != null && inventoryNode.isArray()) {
         for (int i = 0; i < inventoryNode.size(); i++) {
-          Item item = objectMapper.treeToValue(inventoryNode.get(i), Item.class);
-          inventory.add(item);
-        }
-      }
-
-      // re-associate inventory items using the original gameData's items list
-      List<Item> newInventory = new ArrayList<>();
-      if (gameData.getItems() != null) {
-        for (int i = 0; i < inventory.size(); i++) {
-          Item invItem = inventory.get(i);
-          for (Item originalItem : gameData.getItems()) {
-            if (originalItem.getName().equalsIgnoreCase(invItem.getName())) {
-              newInventory.add(originalItem);
-              break;
+          String itemName = inventoryNode.get(i).asText();
+          // get item from gameData if same itemName
+          if (gameData.getItems() != null) {
+            for (Item originalItem : gameData.getItems()) {
+              if (originalItem.getName().equalsIgnoreCase(itemName)) {
+                inventory.add(originalItem);
+                break;
+              }
             }
           }
         }
-      } else {
-        newInventory = inventory;
       }
-      inventory = newInventory;
 
       // process currentRoom
       String currentRoomStr = playerNode.get("currentRoom").asText();

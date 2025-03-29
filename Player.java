@@ -307,60 +307,41 @@ public class Player {
     return result;
   }
 
-  /**
-   * Move method.
-   * @param Direction direction player wants to move
-   * @param map map
-   * @return integer status code shows that whether the move is accepted
-   *         1 : move successfully
-   *         0: direction permanently blocked
-   *        -1: blocked by puzzle or monster
-   *        -2: invalid direction input
-   */
-  public Integer move(String Direction, Map map) {
-    if (!(Direction.equalsIgnoreCase("N") || Direction.equalsIgnoreCase("E") ||
-            Direction.equalsIgnoreCase("S") || Direction.equalsIgnoreCase("W"))) {
-      // anwser must be NSEW,ignore case
-      return -2;
-    }
-    int nextRoomNumber = getNextRoomNumber(Direction);
-    // check
-    if (nextRoomNumber > MINIMUM) {
-      // if nextRoom number is greater than >. it is a valid way
-      for (int i = 0; i < map.getRooms().size(); i++) {
-        Room room = map.getRooms().get(i);
-        if (nextRoomNumber == room.getRoom_number()) {
-          this.currentRoom = room;
-          //"move successfully"
-          return 1;
-          // if map do have this room, then player move to this Room
-        }
+  public Integer move(String direction, Map map) {
+    int nextRoomNumber = getNextRoomNumber(direction);
+
+    if (nextRoomNumber > ROOMNUMBERINVALID) {
+      Room nextRoom = findRoomByNumber(nextRoomNumber, map);
+      if (nextRoom != null) {
+        this.currentRoom = nextRoom;
+        return 1; // move successfully
       }
-      // Room number valid, but no room matched (unexpected error)
-      return -1;
+      return -2; // unexpected error (valid room number but no room)
     } else if (nextRoomNumber == ROOMNUMBERINVALID) {
-      // if nextRoomNumber == 0, it is permanently blocked
-      return 0;
+      return 0; // permanently blocked
     } else {
-      // if it is negative, then there is puzzle or monster currently blocking the access
-      return -1;
+      return -1; // puzzle/monster in the room
     }
   }
 
-  public int getNextRoomNumber(String Direction) {
-    int nextRoomNumber = -1;
-    // using switch case to try to catch direction
-    // blockedMessage = "West is being permanently blocked";
-    nextRoomNumber = switch (Direction) {
-      case "n","north" -> this.currentRoom.getN();
-      // blockedMessage = "North is being permanently blocked";
-      case "e","east" -> this.currentRoom.getE();
-      // blockedMessage = "East is being permanently blocked";
-      case "s","south" -> this.currentRoom.getS();
-      // blockedMessage = "South is being permanently blocked";
-      case "w","west"-> this.currentRoom.getW();
-      default -> nextRoomNumber;
+
+
+  public int getNextRoomNumber(String direction) {
+    return switch (direction) {
+      case "n", "north" -> this.currentRoom.getN();
+      case "e", "east"  -> this.currentRoom.getE();
+      case "s", "south" -> this.currentRoom.getS();
+      case "w", "west"  -> this.currentRoom.getW();
+      default           -> -2; // unexpected error
     };
-    return nextRoomNumber;
+  }
+
+  public Room findRoomByNumber(int roomNumber, Map map) {
+    for (Room room : map.getRooms()) {
+      if (room.getRoom_number() == roomNumber) {
+        return room;
+      }
+    }
+    return null; // unexpected error
   }
 }
